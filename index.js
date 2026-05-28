@@ -19,7 +19,21 @@ async function startBot() {
   sock.ev.on('connection.update', (update) => {
     const { connection, lastDisconnect } = update;
     if (connection === 'open') {
-      console.log('✅ LA VAWULENCE est en ligne');
+  console.log('✅ LA VAWULENCE est en ligne');
+  
+  // Mettre à jour la photo de profil du bot
+  try {
+    const avatarPath = './database/bot_avatar.jpg';
+    const fs = await import('fs');
+    if (fs.existsSync(avatarPath)) {
+      const avatarBuffer = fs.readFileSync(avatarPath);
+      await sock.updateProfilePicture(avatarBuffer);
+      console.log('📸 Photo de profil du bot mise à jour');
+    }
+  } catch (err) {
+    console.log('⚠️ Photo de profil non modifiée (peut-être identique)');
+  }
+};
     }
     if (connection === 'close') {
       const shouldReconnect = lastDisconnect?.error?.output?.statusCode !== DisconnectReason.loggedOut;
